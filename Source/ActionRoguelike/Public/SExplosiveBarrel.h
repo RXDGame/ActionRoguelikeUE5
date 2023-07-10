@@ -22,17 +22,11 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void Explode(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 	
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* StaticMeshComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	URadialForceComponent* RadialForceComp;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 };
