@@ -59,12 +59,13 @@ void ASCharacter::PrimaryAttack()
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_FireProjectile, 0.2f);	
 }
 
-void ASCharacter::PrimaryAttack_FireProjectile() const
+void ASCharacter::PrimaryAttack_FireProjectile()
 {
 	const FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 	const FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	SpawnParams.Instigator = this;
 	
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);	
 }

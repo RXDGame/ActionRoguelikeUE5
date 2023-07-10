@@ -45,7 +45,7 @@ protected:
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 	void PrimaryAttack();
-	void PrimaryAttack_FireProjectile() const;
+	void PrimaryAttack_FireProjectile();
 	void PrimaryInteraction();
 	
 public:	
