@@ -61,13 +61,33 @@ void ASCharacter::PrimaryAttack()
 	GetWorldTimerManager().SetTimer(TimerHandle_PrimaryAttack, this, &ASCharacter::PrimaryAttack_FireProjectile, 0.2f);	
 }
 
+void ASCharacter::SecondaryAttack()
+{	
+	PlayAnimMontage(AttackAnim);
+	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &ASCharacter::SecondaryAttack_FireProjectile, 0.2f);	
+}
+
 void ASCharacter::PrimaryAttack_FireProjectile()
 {
 	const FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
 	const FVector EndLocation = GetAimHit();
 	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(HandLocation, EndLocation);
 	
-	const FTransform SpawnTM = FTransform(TargetRotation, HandLocation);
+	SpawnProjectile(PrimaryProjectileClass, HandLocation, TargetRotation);
+}
+
+void ASCharacter::SecondaryAttack_FireProjectile()
+{
+	const FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	const FVector EndLocation = GetAimHit();
+	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(HandLocation, EndLocation);
+	
+	SpawnProjectile(BlackholeProjectileClass, HandLocation, TargetRotation);
+}
+
+void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass, FVector InLocation, FRotator InRotation)
+{
+	const FTransform SpawnTM = FTransform(InRotation, InLocation);
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.Instigator = this;
@@ -125,6 +145,8 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 	
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ASCharacter::PrimaryAttack);
+	PlayerInputComponent->BindAction("SecondaryAttack", IE_Pressed, this, &ASCharacter::SecondaryAttack);
+	
 	PlayerInputComponent->BindAction("PrimaryInteraction", IE_Pressed, this, &ASCharacter::PrimaryInteraction);
 	
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASCharacter::Jump);
