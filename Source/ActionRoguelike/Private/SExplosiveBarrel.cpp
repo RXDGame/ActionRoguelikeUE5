@@ -12,9 +12,8 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	PrimaryActorTick.bCanEverTick = true;
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("Static Mesh");
-	RootComponent = StaticMeshComponent;
 	StaticMeshComponent->SetSimulatePhysics(true);
-	StaticMeshComponent->SetCollisionProfileName("PhysicsActor");
+	RootComponent = StaticMeshComponent;
 
 	RadialForceComp = CreateDefaultSubobject<URadialForceComponent>("Radial Force Comp");
 	RadialForceComp->SetupAttachment(StaticMeshComponent);
@@ -22,6 +21,7 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 	RadialForceComp->Radius = 700.0f;
 	RadialForceComp->ImpulseStrength = 2000.0f;
 	RadialForceComp->bImpulseVelChange = true;
+	RadialForceComp->AddCollisionChannelToAffect(ECC_WorldDynamic);
 }
 
 void ASExplosiveBarrel::PostInitializeComponents()

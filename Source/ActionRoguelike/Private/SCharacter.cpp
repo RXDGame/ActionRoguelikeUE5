@@ -6,7 +6,9 @@
 #include "SInteractionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/GameUserSettings.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ASCharacter::ASCharacter()
@@ -62,12 +64,15 @@ void ASCharacter::PrimaryAttack()
 void ASCharacter::PrimaryAttack_FireProjectile()
 {
 	const FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	const FTransform SpawnTM = FTransform(GetControlRotation(), HandLocation);
+	const FVector EndLocation = GetAimHit();
+	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(HandLocation, EndLocation);
+	
+	const FTransform SpawnTM = FTransform(TargetRotation, HandLocation);
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.Instigator = this;
 	
-	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);	
+	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
 }
 
 void ASCharacter::PrimaryInteraction()
@@ -75,11 +80,37 @@ void ASCharacter::PrimaryInteraction()
 	InteractionComp->PrimaryInteraction();
 }
 
+FVector ASCharacter::GetAimHit()
+{
+	FVector2D ViewportSize;
+	GetWorld()->GetGameViewport()->GetViewportSize(ViewportSize);
+	const APlayerController* PlayerController = Cast<APlayerController>(GetController());
+
+	FVector WorldLocation, WorldDirection;
+	if(!PlayerController->DeprojectScreenPositionToWorld(ViewportSize.X / 2, ViewportSize.Y / 2, WorldLocation, WorldDirection))
+	{
+		return FVector::Zero();
+	}
+	
+	FVector EndLocation = WorldLocation + WorldDirection * 5000.0f;	
+
+	FHitResult Hit;
+	FCollisionObjectQueryParams ObjectQueryParams;
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+
+	if(GetWorld()->LineTraceSingleByObjectType(Hit, WorldLocation, EndLocation, ObjectQueryParams))
+	{
+		return Hit.ImpactPoint;
+	}
+
+	return EndLocation;
+}
+
 // Called every frame
 void ASCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 // Called to bind functionality to input

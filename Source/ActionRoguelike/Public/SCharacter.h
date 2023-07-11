@@ -48,6 +48,7 @@ protected:
 	void PrimaryAttack_FireProjectile();
 	void PrimaryInteraction();
 	
+	FVector GetAimHit();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
