@@ -3,10 +3,10 @@
 
 #include "SCharacter.h"
 
+#include "SAttributeComponent.h"
 #include "SInteractionComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/GameUserSettings.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -24,6 +24,8 @@ ASCharacter::ASCharacter()
 	CameraComp->SetupAttachment(SpringArmComp);
 
 	InteractionComp = CreateDefaultSubobject<USInteractionComponent>("Interaction Comp");
+
+	AttributeComp = CreateDefaultSubobject<USAttributeComponent>("Attribute Comp");
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
@@ -102,6 +104,11 @@ void ASCharacter::FireDashProjectile()
 
 void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass, FVector InLocation, FRotator InRotation)
 {
+	if(!ensure(ProjectileClass))
+	{
+		return;
+	}
+
 	const FTransform SpawnTM = FTransform(InRotation, InLocation);
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
@@ -168,4 +175,3 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ASCharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ASCharacter::StopJumping);
 }
-
