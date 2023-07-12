@@ -23,10 +23,14 @@ protected:
 	TSubclassOf<AActor> BlackholeProjectileClass;
 	
 	UPROPERTY(EditAnywhere, Category = "Attack")
+	TSubclassOf<AActor> DashProjectileClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Attack")
 	UAnimMontage* AttackAnim;
 
 	FTimerHandle TimerHandle_PrimaryAttack;
 	FTimerHandle TimerHandle_SecondaryAttack;
+	FTimerHandle TimerHandle_Dash;
 	
 public:
 	// Sets default values for this character's properties
@@ -50,9 +54,11 @@ protected:
 	void MoveRight(float Value);
 	void PrimaryAttack();
 	void SecondaryAttack();
+	void Dash();
 	
 	void PrimaryAttack_FireProjectile();
 	void SecondaryAttack_FireProjectile();
+	void FireDashProjectile();
 
 	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass, FVector InLocation, FRotator InRotation);
 	void PrimaryInteraction();

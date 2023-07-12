@@ -64,7 +64,13 @@ void ASCharacter::PrimaryAttack()
 void ASCharacter::SecondaryAttack()
 {	
 	PlayAnimMontage(AttackAnim);
-	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &ASCharacter::SecondaryAttack_FireProjectile, 0.2f);	
+	GetWorldTimerManager().SetTimer(TimerHandle_SecondaryAttack, this, &ASCharacter::SecondaryAttack_FireProjectile, 0.2f);
+}
+
+void ASCharacter::Dash()
+{
+	PlayAnimMontage(AttackAnim);
+	GetWorldTimerManager().SetTimer(TimerHandle_Dash, this, &ASCharacter::FireDashProjectile, 0.2f);	
 }
 
 void ASCharacter::PrimaryAttack_FireProjectile()
@@ -83,6 +89,15 @@ void ASCharacter::SecondaryAttack_FireProjectile()
 	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(HandLocation, EndLocation);
 	
 	SpawnProjectile(BlackholeProjectileClass, HandLocation, TargetRotation);
+}
+
+void ASCharacter::FireDashProjectile()
+{
+	const FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	const FVector EndLocation = GetAimHit();
+	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(HandLocation, EndLocation);
+	
+	SpawnProjectile(DashProjectileClass, HandLocation, TargetRotation);
 }
 
 void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass, FVector InLocation, FRotator InRotation)
@@ -146,6 +161,7 @@ void ASCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 	
 	PlayerInputComponent->BindAction("PrimaryAttack", IE_Pressed, this, &ASCharacter::PrimaryAttack);
 	PlayerInputComponent->BindAction("SecondaryAttack", IE_Pressed, this, &ASCharacter::SecondaryAttack);
+	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &ASCharacter::Dash);
 	
 	PlayerInputComponent->BindAction("PrimaryInteraction", IE_Pressed, this, &ASCharacter::PrimaryInteraction);
 	
