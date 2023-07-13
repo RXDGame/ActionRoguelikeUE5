@@ -47,6 +47,7 @@ void ASDash::HandleHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 void ASDash::Explode()
 {
 	MovementComp->StopMovementImmediately();
+	SetActorEnableCollision(false);
 	EffectComp->Deactivate();
 	ExplosionEffect->Activate();
 	
@@ -56,5 +57,8 @@ void ASDash::Explode()
 void ASDash::Teleport()
 {
 	APawn* InstigatorPawn = GetInstigator();
-	InstigatorPawn->TeleportTo(GetActorLocation(), InstigatorPawn->GetActorRotation());
+	if(ensure(InstigatorPawn))
+	{
+		InstigatorPawn->TeleportTo(GetActorLocation(), InstigatorPawn->GetActorRotation(), false, false);
+	}
 }

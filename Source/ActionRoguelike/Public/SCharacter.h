@@ -64,7 +64,7 @@ protected:
 	void SecondaryAttack_FireProjectile();
 	void FireDashProjectile();
 
-	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass, FVector InLocation, FRotator InRotation);
+	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
 	void PrimaryInteraction();
 	
 	FVector GetAimHit();

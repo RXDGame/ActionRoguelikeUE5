@@ -77,39 +77,31 @@ void ASCharacter::Dash()
 
 void ASCharacter::PrimaryAttack_FireProjectile()
 {
-	const FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	const FVector EndLocation = GetAimHit();
-	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(HandLocation, EndLocation);
-	
-	SpawnProjectile(PrimaryProjectileClass, HandLocation, TargetRotation);
+	SpawnProjectile(PrimaryProjectileClass);
 }
 
 void ASCharacter::SecondaryAttack_FireProjectile()
-{
-	const FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	const FVector EndLocation = GetAimHit();
-	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(HandLocation, EndLocation);
-	
-	SpawnProjectile(BlackholeProjectileClass, HandLocation, TargetRotation);
+{	
+	SpawnProjectile(BlackholeProjectileClass);
 }
 
 void ASCharacter::FireDashProjectile()
 {
-	const FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
-	const FVector EndLocation = GetAimHit();
-	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(HandLocation, EndLocation);
-	
-	SpawnProjectile(DashProjectileClass, HandLocation, TargetRotation);
+	SpawnProjectile(DashProjectileClass);
 }
 
-void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass, FVector InLocation, FRotator InRotation)
+void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass)
 {
 	if(!ensure(ProjectileClass))
 	{
 		return;
 	}
-
-	const FTransform SpawnTM = FTransform(InRotation, InLocation);
+	
+	const FVector HandLocation = GetMesh()->GetSocketLocation("Muzzle_01");
+	const FVector EndLocation = GetAimHit();
+	const FRotator TargetRotation = UKismetMathLibrary::FindLookAtRotation(HandLocation, EndLocation);
+	
+	const FTransform SpawnTM = FTransform(TargetRotation, HandLocation);
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParams.Instigator = this;
@@ -128,22 +120,29 @@ FVector ASCharacter::GetAimHit()
 	GetWorld()->GetGameViewport()->GetViewportSize(ViewportSize);
 	const APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
-	FVector WorldLocation, WorldDirection;
-	if(!PlayerController->DeprojectScreenPositionToWorld(ViewportSize.X / 2, ViewportSize.Y / 2, WorldLocation, WorldDirection))
+	FVector Start, Direction;
+	if(!PlayerController->DeprojectScreenPositionToWorld(ViewportSize.X / 2, ViewportSize.Y / 2, Start, Direction))
 	{
 		return FVector::Zero();
 	}
 	
-	FVector EndLocation = WorldLocation + WorldDirection * 5000.0f;	
+	FVector EndLocation = Start + Direction * 5000.0f;
+
+	FCollisionShape Shape;
+	Shape.SetSphere(20.0f);
+
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
 
 	FHitResult Hit;
 	FCollisionObjectQueryParams ObjectQueryParams;
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_WorldStatic);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
 
-	if(GetWorld()->LineTraceSingleByObjectType(Hit, WorldLocation, EndLocation, ObjectQueryParams))
+	if(GetWorld()->SweepSingleByObjectType(Hit, Start, EndLocation, FQuat::Identity, ObjectQueryParams, Shape, QueryParams))
 	{
-		return Hit.ImpactPoint;
+		EndLocation = Hit.ImpactPoint;
 	}
 
 	return EndLocation;
