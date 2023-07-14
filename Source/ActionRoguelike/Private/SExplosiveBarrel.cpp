@@ -27,18 +27,32 @@ ASExplosiveBarrel::ASExplosiveBarrel()
 void ASExplosiveBarrel::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	StaticMeshComponent->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::Explode);
+	StaticMeshComponent->OnComponentHit.AddDynamic(this, &ASExplosiveBarrel::HandleHit);
+	StaticMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &ASExplosiveBarrel::HandleOverlap);
 }
 
-void ASExplosiveBarrel::Explode(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+void ASExplosiveBarrel::HandleHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	FVector NormalImpulse, const FHitResult& Hit)
 {
-	RadialForceComp->FireImpulse();
+	Explode();
 
-	UE_LOG(LogTemp, Log, TEXT("Explode after actor hit in Explosive Barrel"));
+	// Debugs examples
+	//
+	/*UE_LOG(LogTemp, Log, TEXT("Explode after actor hit in Explosive Barrel"));
 	UE_LOG(LogTemp, Warning, TEXT("Other Actor: %s, at game time: %f"), *GetNameSafe(OtherActor), GetWorld()->TimeSeconds);
 
 	FString CombinedString = FString::Printf(TEXT("Hit at Location: %s"), *Hit.ImpactPoint.ToString());
-	DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 2.0f, true);
+	DrawDebugString(GetWorld(), Hit.ImpactPoint, CombinedString, nullptr, FColor::Green, 2.0f, true);*/
+}
+
+void ASExplosiveBarrel::HandleOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	Explode();
+}
+
+void ASExplosiveBarrel::Explode()
+{
+	RadialForceComp->FireImpulse();
 }
 

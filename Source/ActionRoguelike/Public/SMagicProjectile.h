@@ -15,9 +15,22 @@ class ACTIONROGUELIKE_API ASMagicProjectile : public ASProjectile
 public:	
 	// Sets default values for this actor's properties
 	ASMagicProjectile();
-
 protected:
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UAudioComponent> AudioComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Audio")
+	TObjectPtr<USoundBase> ImpactSound;
+
+	UPROPERTY(EditDefaultsOnly, Category="Audio")
+	TObjectPtr<USoundAttenuation> AttenuationSettings;
+	
+	virtual void PostInitializeComponents() override;
+	virtual void BeginPlay() override;
 	
 	UFUNCTION()
 	void OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult);
+
+	virtual void Explode_Implementation() override;
 };

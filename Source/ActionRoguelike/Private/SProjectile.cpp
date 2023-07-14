@@ -5,6 +5,7 @@
 
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 
 
@@ -27,3 +28,23 @@ ASProjectile::ASProjectile()
 	MovementComp->bInitialVelocityInLocalSpace = true;
 }
 
+void ASProjectile::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	SphereComp->OnComponentHit.AddDynamic(this, &ASProjectile::HandleActorHit);
+}
+
+void ASProjectile::HandleActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	FVector NormalImpulse, const FHitResult& Hit)
+{
+	if(OtherActor && OtherActor != GetInstigator())
+	{
+		Explode();
+	}
+}
+
+void ASProjectile::Explode_Implementation()
+{
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactVFX, GetActorLocation(), GetActorRotation());
+	Destroy();
+}

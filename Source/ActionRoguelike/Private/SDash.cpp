@@ -16,6 +16,9 @@ ASDash::ASDash()
 	ExplosionEffect = CreateDefaultSubobject<UParticleSystemComponent>("Explosion Effect");
 	ExplosionEffect->SetupAttachment(RootComponent);
 	ExplosionEffect->SetAutoActivate(false);
+
+	DetonateDelay = 0.2f;
+	TeleportDelay = 0.2f;
 }
 
 void ASDash::PostInitializeComponents()
@@ -29,7 +32,7 @@ void ASDash::BeginPlay()
 {
 	Super::BeginPlay();
 	SphereComp->IgnoreActorWhenMoving(GetInstigator(), true);
-	GetWorldTimerManager().SetTimer(BeforeExplode_TimerHandle, this, &ASDash::Explode, 0.2f);
+	GetWorldTimerManager().SetTimer(BeforeExplode_TimerHandle, this, &ASDash::Explode, DetonateDelay);
 }
 
 void ASDash::HandleHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
@@ -44,14 +47,14 @@ void ASDash::HandleHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UP
 	Explode();
 }
 
-void ASDash::Explode()
+void ASDash::Explode_Implementation()
 {
 	MovementComp->StopMovementImmediately();
 	SetActorEnableCollision(false);
 	EffectComp->Deactivate();
 	ExplosionEffect->Activate();
 	
-	GetWorldTimerManager().SetTimer(BeforeExplode_TimerHandle, this, &ASDash::Teleport, 0.2f);
+	GetWorldTimerManager().SetTimer(BeforeExplode_TimerHandle, this, &ASDash::Teleport, TeleportDelay);
 }
 
 void ASDash::Teleport()

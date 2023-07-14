@@ -4,7 +4,9 @@
 #include "SMagicProjectile.h"
 
 #include "SAttributeComponent.h"
+#include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ASMagicProjectile::ASMagicProjectile()
@@ -12,11 +14,24 @@ ASMagicProjectile::ASMagicProjectile()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio Comp");
+	AudioComponent->SetupAttachment(RootComponent);
+}
+
+void ASMagicProjectile::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();	
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &ASMagicProjectile::OnActorOverlap);
 }
 
+void ASMagicProjectile::BeginPlay()
+{
+	Super::BeginPlay();
+	AudioComponent->Play();
+}
+
 void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
+                                       UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult &SweepResult)
 {
 	if(OtherActor && OtherActor != GetInstigator())
 	{
@@ -24,8 +39,20 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 		if(AttributeComp)
 		{
 			AttributeComp->ApplyHealthChange(-20.0f);
-			Destroy();
+		}
+
+		if(OtherActor->GetClass() != GetClass())
+		{
+			Explode();
 		}
 	}
+}
+
+void ASMagicProjectile::Explode_Implementation()
+{
+	Super::Explode_Implementation();
+	
+	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ImpactSound, GetActorLocation(), FRotator::ZeroRotator,
+		1,1, 0, AttenuationSettings);
 }
 

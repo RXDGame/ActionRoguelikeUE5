@@ -16,16 +16,25 @@ public:
 	ASDash();
 
 protected:
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UParticleSystemComponent* ExplosionEffect;
+
+	UPROPERTY(EditDefaultsOnly)
+	float DetonateDelay;
+
+	UPROPERTY(EditDefaultsOnly)
+	float TeleportDelay;
+	
 	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
 	void HandleHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-	void Explode();
+
+	virtual void Explode_Implementation() override;
 	void Teleport();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UParticleSystemComponent* ExplosionEffect;
 
 	FTimerHandle BeforeExplode_TimerHandle;
 	FTimerHandle AfterExplode_TimerHandle;

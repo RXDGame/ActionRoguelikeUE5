@@ -19,6 +19,11 @@ public:
 	ASProjectile();
 
 protected:
+	
+	virtual void PostInitializeComponents() override;
+	
+	UFUNCTION()
+	void HandleActorHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* SphereComp;
@@ -28,4 +33,11 @@ protected:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UParticleSystemComponent* EffectComp;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UParticleSystem* ImpactVFX;
+
+public:
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	void Explode();
 };
