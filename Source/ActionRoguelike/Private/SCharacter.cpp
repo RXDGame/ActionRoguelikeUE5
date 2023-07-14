@@ -8,6 +8,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -114,6 +115,7 @@ void ASCharacter::SpawnProjectile(TSubclassOf<AActor> ProjectileClass)
 	SpawnParams.Instigator = this;
 	
 	GetWorld()->SpawnActor<AActor>(ProjectileClass, SpawnTM, SpawnParams);
+	UGameplayStatics::SpawnEmitterAttached(CastingSpellVFX, GetMesh(), "Muzzle_01", FVector::ZeroVector);
 }
 
 void ASCharacter::PrimaryInteraction()

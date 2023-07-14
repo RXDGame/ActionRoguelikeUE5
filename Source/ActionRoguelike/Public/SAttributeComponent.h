@@ -37,4 +37,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Attributes")
 	bool ApplyHealthChange(float Delta);
+
+	UFUNCTION(BlueprintCallable)
+	float GetHealthPercentage() const {return Health / MaxHealth;}
 };

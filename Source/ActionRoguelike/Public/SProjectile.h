@@ -37,6 +37,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	UParticleSystem* ImpactVFX;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UCameraShakeBase> CameraShakeData;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ShakeInnerRadius;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float ShakeOuterRadius;
+
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void Explode();

@@ -5,6 +5,7 @@
 
 #include "Components/SphereComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Particles/ParticleSystemComponent.h"
 
 
@@ -63,5 +64,6 @@ void ASDash::Teleport()
 	if(ensure(InstigatorPawn))
 	{
 		InstigatorPawn->TeleportTo(GetActorLocation(), InstigatorPawn->GetActorRotation(), false, false);
+		UGameplayStatics::PlayWorldCameraShake(GetWorld(), CameraShakeData, GetActorLocation(), ShakeInnerRadius, ShakeOuterRadius);
 	}
 }

@@ -24,6 +24,11 @@ void ASItemChest::Interact_Implementation(APawn* InstigatorPawn)
 	LidMesh->SetRelativeRotation(FRotator(TargetPitch,0,0));
 }
 
+bool ASItemChest::CanInteract_Implementation(APawn* InstigatorPawn)
+{
+	return true;
+}
+
 // Called when the game starts or when spawned
 void ASItemChest::BeginPlay()
 {

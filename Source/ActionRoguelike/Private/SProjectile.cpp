@@ -46,5 +46,6 @@ void ASProjectile::HandleActorHit(UPrimitiveComponent* HitComponent, AActor* Oth
 void ASProjectile::Explode_Implementation()
 {
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactVFX, GetActorLocation(), GetActorRotation());
+	UGameplayStatics::PlayWorldCameraShake(GetWorld(), CameraShakeData, GetActorLocation(), ShakeInnerRadius, ShakeOuterRadius);
 	Destroy();
 }

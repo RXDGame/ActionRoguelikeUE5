@@ -25,6 +25,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	TSubclassOf<AActor> DashProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Attack")
+	TObjectPtr<UParticleSystem> CastingSpellVFX;
 	
 	UPROPERTY(EditAnywhere, Category = "Attack")
 	UAnimMontage* AttackAnim;
