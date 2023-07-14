@@ -37,6 +37,8 @@ public:
 	// Sets default values for this character's properties
 	ASCharacter();
 
+	virtual void PostInitializeComponents() override;
+
 protected:
 
 	UPROPERTY(VisibleAnywhere)
@@ -68,6 +70,9 @@ protected:
 	void PrimaryInteraction();
 	
 	FVector GetAimHit();
+	
+	UFUNCTION()
+	void HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
