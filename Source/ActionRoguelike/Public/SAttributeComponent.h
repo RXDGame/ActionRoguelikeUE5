@@ -19,8 +19,13 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Atrributes")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float MaxHealth;
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Atrributes")
 	float Health;
+
+	virtual void BeginPlay() override;
 
 public:
 
