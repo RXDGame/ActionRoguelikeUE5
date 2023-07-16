@@ -40,4 +40,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetHealthPercentage() const {return Health / MaxHealth;}
+
+	UFUNCTION(BlueprintCallable)
+	float GetMaxHealth() const {return MaxHealth;}
 };
