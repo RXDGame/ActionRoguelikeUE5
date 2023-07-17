@@ -5,6 +5,7 @@
 
 #include "SGameplayInterface.h"
 
+static TAutoConsoleVariable<bool> CVarInteractionDebug(TEXT("su.InteractionDebugDraw"), false, TEXT("Enable Debug Lines for Interaction Component"), ECVF_Cheat);
 
 // Sets default values for this component's properties
 USInteractionComponent::USInteractionComponent()
@@ -38,6 +39,8 @@ void USInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 
 void USInteractionComponent::PrimaryInteraction()
 {
+	bool bDebugDraw = CVarInteractionDebug.GetValueOnGameThread();
+	
 	FCollisionObjectQueryParams QueryParams;
 	QueryParams.AddObjectTypesToQuery(ECC_WorldDynamic);
 
@@ -59,6 +62,11 @@ void USInteractionComponent::PrimaryInteraction()
 
 	for (auto Hit : Hits)
 	{
+		if(bDebugDraw)
+		{
+			DrawDebugSphere(GetWorld(), Hit.ImpactPoint, Radius, 32, LineColor, false, 2.0f);
+		}
+		
 		if(AActor* HitActor = Hit.GetActor())
 		{
 			if(HitActor->Implements<USGameplayInterface>())
@@ -68,9 +76,11 @@ void USInteractionComponent::PrimaryInteraction()
 				break;
 			}
 		}
-		DrawDebugSphere(GetWorld(), Hit.ImpactPoint, Radius, 32, LineColor, false, 2.0f);
 	}
 
-	DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 2.0f, 0, 2.0f);
+	if(bDebugDraw)
+	{
+		DrawDebugLine(GetWorld(), EyeLocation, End, LineColor, false, 2.0f, 0, 2.0f);
+	}
 }
 
