@@ -11,11 +11,10 @@
 // Sets default values
 ASMagicProjectile::ASMagicProjectile()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio Comp");
 	AudioComponent->SetupAttachment(RootComponent);
+
+	DamageAmount = -20.0f;
 }
 
 void ASMagicProjectile::PostInitializeComponents()
@@ -38,7 +37,7 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
 		if(AttributeComp)
 		{
-			AttributeComp->ApplyHealthChange(-20.0f);
+			AttributeComp->ApplyHealthChange(GetInstigator(), DamageAmount);
 		}
 
 		if(OtherActor->GetClass() != GetClass())

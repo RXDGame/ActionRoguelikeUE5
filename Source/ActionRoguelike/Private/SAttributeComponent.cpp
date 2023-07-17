@@ -10,6 +10,27 @@ USAttributeComponent::USAttributeComponent()
 	MaxHealth = 100;
 }
 
+USAttributeComponent* USAttributeComponent::GetAttributes(AActor* FromActor)
+{
+	if(FromActor)
+	{
+		return FromActor->FindComponentByClass<USAttributeComponent>();
+	}
+
+	return nullptr;
+}
+
+bool USAttributeComponent::IsActorAlive(AActor* FromActor)
+{
+	USAttributeComponent* AttributeComponent = GetAttributes(FromActor);
+	if(AttributeComponent)
+	{
+		return  AttributeComponent->IsAlive();
+	}
+
+	return false;
+}
+
 void USAttributeComponent::BeginPlay()
 {
 	Super::BeginPlay();
@@ -21,13 +42,13 @@ bool USAttributeComponent::IsAlive() const
 	return Health > 0.0f;
 }
 
-bool USAttributeComponent::ApplyHealthChange(float Delta)
+bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delta)
 {
 	const float OldHealth = Health;
 	Health = FMath::Clamp(Health + Delta, 0, MaxHealth);
 
 	const float ActualDelta = Health - OldHealth;
-	OnHealthChanged.Broadcast(nullptr, this, Health, ActualDelta);
+	OnHealthChanged.Broadcast(InstigatorActor, this, Health, ActualDelta);
 
 	return ActualDelta != 0;
 }

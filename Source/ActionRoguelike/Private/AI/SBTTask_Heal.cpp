@@ -14,13 +14,13 @@ EBTNodeResult::Type USBTTask_Heal::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 		return EBTNodeResult::Failed;
 	}
 
-	const APawn* Pawn = Controller->GetPawn();
+	APawn* Pawn = Controller->GetPawn();
 	USAttributeComponent* AttributeComponent = Pawn->GetComponentByClass<USAttributeComponent>();
 	if(!AttributeComponent)
 	{
 		return EBTNodeResult::Failed;
 	}
 
-	AttributeComponent->ApplyHealthChange(AttributeComponent->GetMaxHealth());
+	AttributeComponent->ApplyHealthChange(Pawn, AttributeComponent->GetMaxHealth());
 	return EBTNodeResult::Succeeded;
 }

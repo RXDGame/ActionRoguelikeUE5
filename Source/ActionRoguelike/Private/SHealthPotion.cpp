@@ -21,7 +21,7 @@ void ASHealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 	USAttributeComponent* AttributeComponent = InstigatorPawn->GetComponentByClass<USAttributeComponent>();
 	if(AttributeComponent)
 	{
-		if(AttributeComponent->ApplyHealthChange(RestoreAmount))
+		if(AttributeComponent->ApplyHealthChange(this, RestoreAmount))
 		{
 			DeactivatePickup();
 		}

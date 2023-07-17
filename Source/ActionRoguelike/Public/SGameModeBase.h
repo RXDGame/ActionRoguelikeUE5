@@ -41,4 +41,6 @@ protected:
 	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
 	
 	void SpawnBotTimerElapsed();
+
+	bool CanSpawnBot() const;
 };

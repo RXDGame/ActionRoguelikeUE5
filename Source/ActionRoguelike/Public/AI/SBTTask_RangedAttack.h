@@ -16,8 +16,13 @@ class ACTIONROGUELIKE_API USBTTask_RangedAttack : public UBTTaskNode
 	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 
+	USBTTask_RangedAttack();
+
 protected:
 
+	UPROPERTY(EditAnywhere, Category = "AI")
+	float MaxBulletSpread;
+	
 	UPROPERTY(EditAnywhere, Category = "AI")
 	FBlackboardKeySelector TargetActorKey;
 

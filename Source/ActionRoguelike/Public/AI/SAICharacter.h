@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SWorldUserWidget.h"
 #include "GameFramework/Character.h"
 #include "SAICharacter.generated.h"
 
@@ -19,8 +20,22 @@ public:
 	ASAICharacter();
 
 protected:
+	
+	USWorldUserWidget* ActiveHealthBar;
+	
+	UPROPERTY(VisibleAnywhere, Category = "Hit")
+	FName TimeToHitParam;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<UUserWidget> HealthBarWidgetClass;
 
 	virtual void PostInitializeComponents() override;
+
+	UFUNCTION()
+	void HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
+
+	void SetTargetActor(AActor* NewActor);
+	void Die();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<USAttributeComponent> AttributeComponent;

@@ -127,18 +127,13 @@ FVector ASCharacter::GetAimHit()
 {
 	FVector2D ViewportSize;
 	GetWorld()->GetGameViewport()->GetViewportSize(ViewportSize);
-	const APlayerController* PlayerController = Cast<APlayerController>(GetController());
 
-	FVector Start, Direction;
-	if(!PlayerController->DeprojectScreenPositionToWorld(ViewportSize.X / 2, ViewportSize.Y / 2, Start, Direction))
-	{
-		return FVector::Zero();
-	}
-	
+	FVector Start = CameraComp->GetComponentLocation();
+	FVector Direction = GetControlRotation().Vector();	
 	FVector EndLocation = Start + Direction * 5000.0f;
 
 	FCollisionShape Shape;
-	Shape.SetSphere(20.0f);
+	Shape.SetSphere(15.0f);
 
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);

@@ -21,6 +21,11 @@ void ASGameModeBase::StartPlay()
 
 void ASGameModeBase::SpawnBotTimerElapsed()
 {
+	if(!CanSpawnBot())
+	{
+		return;
+	}
+	
 	const auto QueryInstance = UEnvQueryManager::RunEQSQuery(this, SpawnBotQuery, this, EEnvQueryRunMode::RandomBest5Pct, nullptr);
 
 	if(ensure(QueryInstance))
@@ -29,26 +34,20 @@ void ASGameModeBase::SpawnBotTimerElapsed()
 	}
 }
 
-void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance,
-	EEnvQueryStatus::Type QueryStatus)
+bool ASGameModeBase::CanSpawnBot() const
 {
-	if (QueryStatus != EEnvQueryStatus::Success)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("EQS Bot Spawning failed!"));
-		return;
-	}
-
 	int32 NumberOfAliveBots = 0;
 	for(TActorIterator<ASAICharacter> It(GetWorld()); It; ++It)
 	{
-		const ASAICharacter* Bot = *It;
-		
-		USAttributeComponent* AttributeComponent = Bot->GetComponentByClass<USAttributeComponent>();
-		if(AttributeComponent && AttributeComponent->IsAlive())
+		ASAICharacter* Bot = *It;		
+		USAttributeComponent* AttributeComponent = USAttributeComponent::GetAttributes(Bot);
+		if(ensure(AttributeComponent) && AttributeComponent->IsAlive())
 		{
 			NumberOfAliveBots++;
 		}
 	}
+	
+	UE_LOG(LogTemp, Log, TEXT("Number of Bots alive: %i"), NumberOfAliveBots);
 
 	float MaxNumberOfBot = 10.0f;
 	if(DifficultyCurve)
@@ -58,6 +57,19 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 	
 	if(NumberOfAliveBots >= MaxNumberOfBot)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Can't spawn. Max number of bots reached."));
+		return false;
+	}
+
+	return true;
+}
+
+void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance,
+                                      EEnvQueryStatus::Type QueryStatus)
+{
+	if (QueryStatus != EEnvQueryStatus::Success)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("EQS Bot Spawning failed!"));
 		return;
 	}
 
@@ -65,5 +77,6 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 	if(Locations.Num() > 0)
 	{
 		GetWorld()->SpawnActor<AActor>(MinionClass, Locations[0], FRotator::ZeroRotator);
+		DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 16, FColor::Red, false, 2.0f);
 	}
 }

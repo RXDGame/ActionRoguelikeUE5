@@ -17,6 +17,9 @@ public:
 	ASMagicProjectile();
 protected:
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	float DamageAmount;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UAudioComponent> AudioComponent;
 
