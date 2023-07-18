@@ -18,15 +18,11 @@ class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 {
 	GENERATED_BODY()
 public:
-	// Sets default values for this character's properties
 	ASCharacter();
 
 	virtual void PostInitializeComponents() override;
 
 protected:
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Actions")
-	TArray<TSubclassOf<USAction>> DefaultActions; 
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
@@ -43,8 +39,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Actions")
 	USActionComponent* ActionComponent;
 	
-	virtual void BeginPlay() override;
-
 	void MoveForward(float Value);
 	void MoveRight(float Value);	
 	void SprintStart();

@@ -40,16 +40,6 @@ void ASCharacter::PostInitializeComponents()
 	AttributeComp->OnHealthChanged.AddDynamic(this, &ASCharacter::HandleHealthChanged);
 }
 
-void ASCharacter::BeginPlay()
-{
-	Super::BeginPlay();
-
-	for (const TSubclassOf<USAction> ActionClass : DefaultActions)
-	{
-		ActionComponent->AddAction(ActionClass);
-	}
-}
-
 void ASCharacter::MoveForward(float Value)
 {
 	FRotator ControlRot = GetControlRotation();

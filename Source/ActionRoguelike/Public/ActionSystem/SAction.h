@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "UObject/Object.h"
 #include "SAction.generated.h"
 
+class USActionComponent;
 /**
  * 
  */
@@ -14,9 +16,22 @@ class ACTIONROGUELIKE_API USAction : public UObject
 {
 	GENERATED_BODY()
 
+protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Tags")
+	FGameplayTagContainer GrantsTags;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Tags")
+	FGameplayTagContainer BlockedTags;
+
+	bool bIsRunning;
+	
 public:
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
 	FName ActionName;
+
+	UFUNCTION(BlueprintCallable, Category = "Action")
+	bool CanStart(AActor* Instigator);
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Action")
 	void StartAction(AActor* Instigator);
@@ -25,4 +40,9 @@ public:
 	void StopAction(AActor* Instigator);
 
 	virtual UWorld* GetWorld() const override;
+
+	UFUNCTION(BlueprintCallable, Category = "Action")
+	USActionComponent* GetOwningComponent() const;
+
+	bool IsRunning() const;
 };
