@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "SCharacter.generated.h"
 
+class USAction;
+class USActionComponent;
 class USAttributeComponent;
 class USInteractionComponent;
 class UCameraComponent;
@@ -15,27 +17,6 @@ UCLASS()
 class ACTIONROGUELIKE_API ASCharacter : public ACharacter
 {
 	GENERATED_BODY()
-
-protected:
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> PrimaryProjectileClass;
-	
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> BlackholeProjectileClass;
-	
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	TSubclassOf<AActor> DashProjectileClass;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Attack")
-	TObjectPtr<UParticleSystem> CastingSpellVFX;
-	
-	UPROPERTY(EditAnywhere, Category = "Attack")
-	UAnimMontage* AttackAnim;
-
-	FTimerHandle TimerHandle_PrimaryAttack;
-	FTimerHandle TimerHandle_SecondaryAttack;
-	FTimerHandle TimerHandle_Dash;
-	
 public:
 	// Sets default values for this character's properties
 	ASCharacter();
@@ -43,6 +24,9 @@ public:
 	virtual void PostInitializeComponents() override;
 
 protected:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Actions")
+	TArray<TSubclassOf<USAction>> DefaultActions; 
 
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArmComp;
@@ -56,29 +40,25 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USAttributeComponent* AttributeComp;
 	
-	// Called when the game starts or when spawned
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, category = "Actions")
+	USActionComponent* ActionComponent;
+	
 	virtual void BeginPlay() override;
 
 	void MoveForward(float Value);
-	void MoveRight(float Value);
+	void MoveRight(float Value);	
+	void SprintStart();
+	void SprintStop();
+	
 	void PrimaryAttack();
 	void SecondaryAttack();
 	void Dash();
 	
-	void PrimaryAttack_FireProjectile();
-	void SecondaryAttack_FireProjectile();
-	void FireDashProjectile();
-
-	void SpawnProjectile(TSubclassOf<AActor> ProjectileClass);
 	void PrimaryInteraction();
-	
-	FVector GetAimHit();
 	
 	UFUNCTION()
 	void HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);	
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
