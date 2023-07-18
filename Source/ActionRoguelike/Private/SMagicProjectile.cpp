@@ -4,6 +4,7 @@
 #include "SMagicProjectile.h"
 
 #include "SAttributeComponent.h"
+#include "SGameplayFunctionLibrary.h"
 #include "Components/AudioComponent.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -14,7 +15,7 @@ ASMagicProjectile::ASMagicProjectile()
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>("Audio Comp");
 	AudioComponent->SetupAttachment(RootComponent);
 
-	DamageAmount = -20.0f;
+	DamageAmount = 20.0f;
 }
 
 void ASMagicProjectile::PostInitializeComponents()
@@ -34,13 +35,18 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 {
 	if(OtherActor && OtherActor != GetInstigator())
 	{
-		USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
+		/*USAttributeComponent* AttributeComp = Cast<USAttributeComponent>(OtherActor->GetComponentByClass(USAttributeComponent::StaticClass()));
 		if(AttributeComp)
 		{
 			AttributeComp->ApplyHealthChange(GetInstigator(), DamageAmount);
 		}
 
 		if(OtherActor->GetClass() != GetClass())
+		{
+			Explode();
+		}*/
+
+		if(USGameplayFunctionLibrary::ApplyDirectionalDamage(GetInstigator(), OtherActor, DamageAmount, SweepResult))
 		{
 			Explode();
 		}
