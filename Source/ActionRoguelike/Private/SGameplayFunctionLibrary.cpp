@@ -4,6 +4,8 @@
 #include "SGameplayFunctionLibrary.h"
 
 #include "SAttributeComponent.h"
+#include "SPlayerState.h"
+#include "Kismet/GameplayStatics.h"
 
 bool USGameplayFunctionLibrary::ApplyDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount)
 {
@@ -29,6 +31,17 @@ bool USGameplayFunctionLibrary::ApplyDirectionalDamage(AActor* DamageCauser, AAc
 			HitComponent->AddImpulseAtLocation(Direction * 300000.f, Hit.Location, Hit.BoneName);
 		}
 		return true;
+	}
+
+	return false;
+}
+
+bool USGameplayFunctionLibrary::ApplyCreditsChange(UWorld* WorldContext, int PlayerIndex, int CreditsToChange)
+{
+	ASPlayerState* PlayerState = Cast<ASPlayerState>(UGameplayStatics::GetPlayerState(WorldContext, PlayerIndex));
+	if(PlayerState)
+	{
+		return PlayerState->ApplyCreditChange(CreditsToChange);
 	}
 
 	return false;

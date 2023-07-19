@@ -3,17 +3,24 @@
 
 #include "SHealthPotion.h"
 #include "SAttributeComponent.h"
+#include "SGameplayFunctionLibrary.h"
 
 
 // Sets default values
 ASHealthPotion::ASHealthPotion()
 {
 	RestoreAmount = 60.0f;
+	CreditsCost = 10;
 }
 
 void ASHealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 {
 	if(!CanInteract_Implementation(InstigatorPawn))
+	{
+		return;
+	}
+
+	if(!USGameplayFunctionLibrary::ApplyCreditsChange(GetWorld(), 0, -CreditsCost))
 	{
 		return;
 	}

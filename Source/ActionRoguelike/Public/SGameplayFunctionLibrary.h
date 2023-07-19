@@ -21,4 +21,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "Gameplay")
 	static bool ApplyDirectionalDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount, const FHitResult& Hit);
+
+	UFUNCTION(BlueprintCallable, Category = "Gameplay")
+	static bool ApplyCreditsChange(UWorld* WorldContext, int PlayerIndex, int CreditsToChange);
 };

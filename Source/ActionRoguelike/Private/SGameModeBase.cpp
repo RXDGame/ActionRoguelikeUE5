@@ -5,8 +5,11 @@
 #include "EngineUtils.h"
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
+#include "SPlayerState.h"
 #include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
+#include "GameFramework/GameStateBase.h"
+#include "Kismet/GameplayStatics.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"), true, TEXT("Enable spawning of bots via timer."), ECVF_Cheat);
 
@@ -34,6 +37,21 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* KillerActor)
 
 		constexpr float RespawnDelay = 2.0f;
 		GetWorldTimerManager().SetTimer(TimerHandle_RespawnDelay, Delegate, RespawnDelay, false);
+	}
+	else
+	{
+		int Credits = 1;
+		USAttributeComponent* AttributeComp = USAttributeComponent::GetAttributes(VictimActor);
+		if(AttributeComp)
+		{
+			Credits = AttributeComp->CreditsOnDie;
+		}
+
+		ASPlayerState* PlayerState = Cast<ASPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0));		
+		if(PlayerState)
+		{				
+			PlayerState->ApplyCreditChange(Credits);
+		}
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("OnActorKilled - Victim: %s, Killer: %s"), *GetNameSafe(VictimActor), *GetNameSafe(KillerActor));

@@ -33,7 +33,10 @@ protected:
 
 	virtual void BeginPlay() override;
 
-public:
+public:	
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Credits")
+	int CreditsOnDie;
 
 	UFUNCTION(BlueprintCallable)
 	bool Kill(AActor* InstigatorActor);

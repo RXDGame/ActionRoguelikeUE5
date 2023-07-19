@@ -16,6 +16,7 @@ ASPickup::ASPickup()
 
 	bInactive = false;
 	InactiveDuration = 10.0f;
+	CreditsCost = 0;
 }
 
 void ASPickup::ActivatePickup()

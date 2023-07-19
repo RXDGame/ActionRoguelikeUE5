@@ -11,6 +11,7 @@ static TAutoConsoleVariable<float> CVarDamageMultiplier(TEXT("su.DamageMultiplie
 USAttributeComponent::USAttributeComponent()
 {
 	MaxHealth = 100;
+	CreditsOnDie = 5;
 }
 
 USAttributeComponent* USAttributeComponent::GetAttributes(AActor* FromActor)

@@ -19,6 +19,9 @@ public:
 	
 protected:
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Credits")
+	int CreditsCost;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<USphereComponent> SphereComponent;
 
