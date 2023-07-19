@@ -7,6 +7,7 @@
 #include "BrainComponent.h"
 #include "SAttributeComponent.h"
 #include "SWorldUserWidget.h"
+#include "ActionSystem/SActionComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
@@ -18,6 +19,7 @@ ASAICharacter::ASAICharacter()
 {
 	PawnSensingComponent = CreateDefaultSubobject<UPawnSensingComponent>("Pawn Sensing Comp");
 	AttributeComponent = CreateDefaultSubobject<USAttributeComponent>("Attribute Comp");
+	ActionComponent = CreateDefaultSubobject<USActionComponent>("Action Comp");
 
 	TargetActorKeyName = "TargetActor";
 	TimeToHitParam = "TimeToHit";
