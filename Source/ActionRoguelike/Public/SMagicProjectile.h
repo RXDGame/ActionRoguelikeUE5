@@ -8,6 +8,8 @@
 #include "SProjectile.h"
 #include "SMagicProjectile.generated.h"
 
+class USActionEffect;
+
 UCLASS()
 class ACTIONROGUELIKE_API ASMagicProjectile : public ASProjectile
 {
@@ -24,6 +26,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	FGameplayTag ParryTag;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effect")
+	TSubclassOf<USActionEffect> BurningEffectClass;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UAudioComponent> AudioComponent;
 
@@ -32,7 +37,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category="Audio")
 	TObjectPtr<USoundAttenuation> AttenuationSettings;
-	
+
 	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	

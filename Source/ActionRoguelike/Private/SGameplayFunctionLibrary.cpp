@@ -35,14 +35,3 @@ bool USGameplayFunctionLibrary::ApplyDirectionalDamage(AActor* DamageCauser, AAc
 
 	return false;
 }
-
-bool USGameplayFunctionLibrary::ApplyCreditsChange(UWorld* WorldContext, int PlayerIndex, int CreditsToChange)
-{
-	ASPlayerState* PlayerState = Cast<ASPlayerState>(UGameplayStatics::GetPlayerState(WorldContext, PlayerIndex));
-	if(PlayerState)
-	{
-		return PlayerState->ApplyCreditChange(CreditsToChange);
-	}
-
-	return false;
-}

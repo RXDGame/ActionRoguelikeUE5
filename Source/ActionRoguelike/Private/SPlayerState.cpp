@@ -9,18 +9,23 @@ ASPlayerState::ASPlayerState()
 	Credits = 0;
 }
 
-bool ASPlayerState::ApplyCreditChange(int Amount)
+void ASPlayerState::AddCredits(int32 Delta)
 {
-	const int NewCredits = Credits + Amount;
-	if(Amount < 0 && NewCredits < 0)
+	Credits += Delta;
+	OnCreditsChange.Broadcast(Delta, Credits);
+}
+
+bool ASPlayerState::RemoveCredits(int32 Delta)
+{
+	if(Credits < Delta)
 	{
-		FString FailedMsg = FString::Printf(TEXT("Insufficient credits! Required %i | Current: %i"), Amount, Credits);
+		FString FailedMsg = FString::Printf(TEXT("Insufficient credits! Required %i | Current: %i"), Delta, Credits);
 		GEngine->AddOnScreenDebugMessage(-1, 2.0f, FColor::Red, FailedMsg);
 		return false;
 	}
 
-	Credits = NewCredits;
-	OnCreditsChange.Broadcast(Amount, Credits);
+	Credits -= Delta;
+	OnCreditsChange.Broadcast(Delta, Credits);
 	return true;
 }
 

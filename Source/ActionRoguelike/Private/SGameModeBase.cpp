@@ -9,7 +9,6 @@
 #include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/GameStateBase.h"
-#include "Kismet/GameplayStatics.h"
 
 static TAutoConsoleVariable<bool> CVarSpawnBots(TEXT("su.SpawnBots"), true, TEXT("Enable spawning of bots via timer."), ECVF_Cheat);
 
@@ -47,10 +46,13 @@ void ASGameModeBase::OnActorKilled(AActor* VictimActor, AActor* KillerActor)
 			Credits = AttributeComp->CreditsOnDie;
 		}
 
-		ASPlayerState* PlayerState = Cast<ASPlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0));		
-		if(PlayerState)
-		{				
-			PlayerState->ApplyCreditChange(Credits);
+		APawn* KillerPawn = Cast<APawn>(KillerActor);
+		if(KillerPawn)
+		{
+			if(ASPlayerState* PlayerState = KillerPawn->GetPlayerState<ASPlayerState>())
+			{				
+				PlayerState->AddCredits(Credits);
+			}
 		}
 	}
 

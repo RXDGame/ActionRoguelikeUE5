@@ -19,7 +19,7 @@ public:
 protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Credits")
-	int Credits;
+	int32 Credits;
 
 public:
 
@@ -27,8 +27,11 @@ public:
 	FCreditsChangeDelegate OnCreditsChange;
 
 	UFUNCTION(BlueprintCallable, Category = "Credits")
-	bool ApplyCreditChange(int Amount);
+	void AddCredits(int32 Delta);
+	
+	UFUNCTION(BlueprintCallable, Category = "Credits")
+	bool RemoveCredits(int32 Delta);
 
 	UFUNCTION(BlueprintCallable, Category = "Credits")
-	int GetCredits() const;
+	int32 GetCredits() const;
 };

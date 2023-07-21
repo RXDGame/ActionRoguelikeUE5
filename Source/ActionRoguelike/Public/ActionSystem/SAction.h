@@ -27,6 +27,10 @@ protected:
 	bool bIsRunning;
 	
 public:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Action")
+	bool bAutoStart;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
 	FName ActionName;
 

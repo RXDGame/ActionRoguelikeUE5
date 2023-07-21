@@ -3,7 +3,7 @@
 
 #include "SHealthPotion.h"
 #include "SAttributeComponent.h"
-#include "SGameplayFunctionLibrary.h"
+#include "SPlayerState.h"
 
 
 // Sets default values
@@ -20,7 +20,8 @@ void ASHealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 		return;
 	}
 
-	if(!USGameplayFunctionLibrary::ApplyCreditsChange(GetWorld(), 0, -CreditsCost))
+	ASPlayerState* PS = Cast<ASPlayerState>(InstigatorPawn->GetPlayerState());
+	if(PS && !PS->RemoveCredits(CreditsCost))
 	{
 		return;
 	}
