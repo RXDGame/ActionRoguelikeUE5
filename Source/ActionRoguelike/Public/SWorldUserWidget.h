@@ -25,6 +25,6 @@ protected:
 	TObjectPtr<USizeBox> ParentSizeBox;
 
 public:
-	UPROPERTY(BlueprintReadOnly, Category = "UI")
+	UPROPERTY(BlueprintReadOnly, Category = "UI", meta = (ExposeOnSpawn))
 	TObjectPtr<AActor> AttachedActor;
 };

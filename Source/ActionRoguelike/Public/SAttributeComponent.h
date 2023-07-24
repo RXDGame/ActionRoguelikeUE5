@@ -25,13 +25,16 @@ public:
 
 protected:
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Replicated)
 	float MaxHealth;
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Atrributes")
+	UPROPERTY(BlueprintReadOnly, Replicated, Category = "Atrributes")
 	float Health;
 
 	virtual void BeginPlay() override;
+
+	UFUNCTION(NetMulticast, Reliable) //@FIXME: mark me as unreliable once we moved the "state" of our scharacter
+	void MulticastHealthChanged(AActor* Instigator, float NewHealth, float Delta);
 
 public:	
 
