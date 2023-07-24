@@ -19,20 +19,19 @@ public:
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 	virtual bool CanInteract_Implementation(APawn* InstigatorPawn) override;
 
-	// Sets default values for this actor's properties
 	ASItemChest();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
+	UPROPERTY(ReplicatedUsing = "OnRep_LidOpened")
+	bool bLidOpened;
+
+	UFUNCTION()
+	void OnRep_LidOpened();
+	
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* BaseMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UStaticMeshComponent* LidMesh;
-
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 };

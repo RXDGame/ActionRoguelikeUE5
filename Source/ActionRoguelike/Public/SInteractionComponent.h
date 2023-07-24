@@ -47,4 +47,7 @@ public:
 	                           FActorComponentTickFunction* ThisTickFunction) override;
 	
 	void PrimaryInteraction();
+
+	UFUNCTION(Server, Reliable)
+	void ServerInteract(AActor* InFocus);
 };
