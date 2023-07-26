@@ -23,12 +23,18 @@ public:
 protected:
 	
 	USWorldUserWidget* ActiveHealthBar;
+	USWorldUserWidget* ActiveSpotted;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Hit")
 	FName TimeToHitParam;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<UUserWidget> HealthBarWidgetClass;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<USWorldUserWidget> SpottedWidgetClass;
+
+	AActor* CurrentTarget;
 
 	virtual void PostInitializeComponents() override;
 
@@ -36,6 +42,7 @@ protected:
 	void HandleHealthChanged(AActor* InstigatorActor, USAttributeComponent* OwningComp, float NewHealth, float Delta);
 
 	void SetTargetActor(AActor* NewActor);
+	void AddSpottedUI();
 	void Die();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

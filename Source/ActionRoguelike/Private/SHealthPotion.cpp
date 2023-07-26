@@ -15,7 +15,7 @@ ASHealthPotion::ASHealthPotion()
 
 void ASHealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 {
-	if(!CanInteract_Implementation(InstigatorPawn))
+	if(!Execute_CanInteract(this, InstigatorPawn))
 	{
 		return;
 	}
@@ -38,7 +38,7 @@ void ASHealthPotion::Interact_Implementation(APawn* InstigatorPawn)
 
 bool ASHealthPotion::CanInteract_Implementation(APawn* InstigatorPawn)
 {
-	if(bInactive)
+	if(!Super::CanInteract_Implementation(InstigatorPawn))
 	{
 		return false;
 	}

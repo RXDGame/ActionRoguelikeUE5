@@ -65,13 +65,31 @@ void ASAICharacter::HandleHealthChanged(AActor* InstigatorActor, USAttributeComp
 	}
 }
 
+
 void ASAICharacter::SetTargetActor(AActor* NewActor)
 {
 	AAIController* AIControler = Cast<AAIController>(GetController());
 	if(AIControler)
 	{
 		AIControler->GetBlackboardComponent()->SetValueAsObject(TargetActorKeyName, NewActor);
+		if(NewActor != CurrentTarget)
+		{
+			CurrentTarget = NewActor;
+			AddSpottedUI();
+		}
 	}
+}
+
+void ASAICharacter::AddSpottedUI()
+{
+	if(ActiveSpotted != nullptr)
+	{
+		ActiveSpotted->RemoveFromParent();
+	}
+			
+	ActiveSpotted = CreateWidget<USWorldUserWidget>(GetWorld(), SpottedWidgetClass);
+	ActiveSpotted->AttachedActor = this;
+	ActiveSpotted->AddToViewport();
 }
 
 void ASAICharacter::Die()

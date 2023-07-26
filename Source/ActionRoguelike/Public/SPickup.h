@@ -16,6 +16,9 @@ class ACTIONROGUELIKE_API ASPickup : public AActor, public ISGameplayInterface
 
 public:
 	ASPickup();
+
+	virtual bool CanInteract_Implementation(APawn* InstigatorPawn) override;
+	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 	
 protected:
 
@@ -31,8 +34,8 @@ protected:
 	UPROPERTY(BlueprintReadOnly)
 	bool bInactive;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	float InactiveDuration;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Respawn")
+	float RespawnDelay;
 	
 	FTimerHandle ResetActivation_TimerHandle;
 	

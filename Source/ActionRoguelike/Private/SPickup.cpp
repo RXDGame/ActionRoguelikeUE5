@@ -15,10 +15,23 @@ ASPickup::ASPickup()
 	MeshComponent->SetupAttachment(SphereComponent);
 
 	bInactive = false;
-	InactiveDuration = 10.0f;
+	RespawnDelay = 10.0f;
 	CreditsCost = 0;
 
 	bReplicates = true;
+}
+
+bool ASPickup::CanInteract_Implementation(APawn* InstigatorPawn)
+{
+	return !bInactive;
+}
+
+void ASPickup::Interact_Implementation(APawn* InstigatorPawn)
+{
+	if(Execute_CanInteract(this, InstigatorPawn))
+	{
+		DeactivatePickup();
+	}
 }
 
 void ASPickup::ActivatePickup()
@@ -33,5 +46,8 @@ void ASPickup::DeactivatePickup()
 	bInactive = true;
 	MeshComponent->SetVisibility(false);
 	SphereComponent->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	GetWorldTimerManager().SetTimer(ResetActivation_TimerHandle, this, &ASPickup::ActivatePickup, InactiveDuration);
+	if(RespawnDelay > 0.0f)
+	{
+		GetWorldTimerManager().SetTimer(ResetActivation_TimerHandle, this, &ASPickup::ActivatePickup, RespawnDelay);
+	}
 }
