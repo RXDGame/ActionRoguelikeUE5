@@ -2,10 +2,7 @@
 
 
 #include "SGameplayFunctionLibrary.h"
-
 #include "SAttributeComponent.h"
-#include "SPlayerState.h"
-#include "Kismet/GameplayStatics.h"
 
 bool USGameplayFunctionLibrary::ApplyDamage(AActor* DamageCauser, AActor* TargetActor, float DamageAmount)
 {

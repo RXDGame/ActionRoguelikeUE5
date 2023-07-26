@@ -35,7 +35,7 @@ public:
 	FName ActionName;
 
 	UFUNCTION(BlueprintCallable, Category = "Action")
-	bool CanStart(AActor* Instigator);
+	virtual bool CanStart(AActor* Instigator);
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Action")
 	void StartAction(AActor* Instigator);

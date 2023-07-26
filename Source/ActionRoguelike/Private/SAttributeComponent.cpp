@@ -14,6 +14,10 @@ USAttributeComponent::USAttributeComponent()
 	Health = MaxHealth;
 	CreditsOnDie = 5;
 
+	MaxRage = 100;
+	Rage = MaxRage;
+	RageMultiplierFromDamage = 3.f;
+
 	SetIsReplicatedByDefault(true);
 }
 
@@ -44,6 +48,7 @@ void USAttributeComponent::BeginPlay()
 	Health = MaxHealth;
 }
 
+
 bool USAttributeComponent::Kill(AActor* InstigatorActor)
 {
 	return ApplyHealthChange(InstigatorActor, -GetMaxHealth());
@@ -71,27 +76,56 @@ bool USAttributeComponent::ApplyHealthChange(AActor* InstigatorActor, float Delt
 	Health = FMath::Clamp(Health + Delta, 0, MaxHealth);
 
 	const float ActualDelta = Health - OldHealth;
-	//OnHealthChanged.Broadcast(InstigatorActor, this, Health, ActualDelta);
 	if(ActualDelta != 0)
 	{
 		MulticastHealthChanged(InstigatorActor, Health, ActualDelta);
 	}
 
-	if(Delta < 0.0f && Health == 0.0f)
+	if(ActualDelta < 0.0f)
 	{
-		ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>();
-		if(GM)
+		if(Health == 0.0f)
 		{
-			GM->OnActorKilled(GetOwner(), InstigatorActor);
+			ASGameModeBase* GM = GetWorld()->GetAuthGameMode<ASGameModeBase>();
+			if(GM)
+			{
+				GM->OnActorKilled(GetOwner(), InstigatorActor);
+			}
 		}
+		else
+		{
+			ApplyRageChange(InstigatorActor, FMath::Abs(ActualDelta) * RageMultiplierFromDamage);
+		}		
 	}
 
 	return ActualDelta != 0;
 }
 
+bool USAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
+{
+	if(Rage + Delta < 0.0f)
+	{
+		return false;
+	}
+	
+	const float OldRage = Rage;
+	Rage = FMath::Clamp(Rage + Delta, 0.0f, MaxRage);
+	const float RageDelta = Rage - OldRage;
+	if(RageDelta != 0)
+	{
+		MulticastRageChanged(InstigatorActor, Rage, RageDelta);
+	}
+
+	return RageDelta != 0;
+}
+
 void USAttributeComponent::MulticastHealthChanged_Implementation(AActor* Instigator, float NewHealth, float Delta)
 {
 	OnHealthChanged.Broadcast(Instigator,this, NewHealth, Delta);
+}
+
+void USAttributeComponent::MulticastRageChanged_Implementation(AActor* Instigator, float NewRage, float Delta)
+{
+	OnRageChanged.Broadcast(Instigator, this, NewRage, Delta);
 }
 
 void USAttributeComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
