@@ -15,7 +15,7 @@ USAttributeComponent::USAttributeComponent()
 	CreditsOnDie = 5;
 
 	MaxRage = 100;
-	Rage = MaxRage;
+	Rage = 0;
 	RageMultiplierFromDamage = 3.f;
 
 	SetIsReplicatedByDefault(true);

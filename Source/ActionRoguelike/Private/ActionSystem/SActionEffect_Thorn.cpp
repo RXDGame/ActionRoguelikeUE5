@@ -48,5 +48,6 @@ void USActionEffect_Thorn::ReflectDamage(AActor* InstigatorActor, USAttributeCom
 		return;
 	}
 
-	USGameplayFunctionLibrary::ApplyDamage(GetOwningComponent()->GetOwner(), InstigatorActor, FMath::Abs(Delta) * DamageFractionReflected);
+	const int32 ReflectedAmount = FMath::RoundToInt(FMath::Abs(Delta) * DamageFractionReflected);
+	USGameplayFunctionLibrary::ApplyDamage(GetOwningComponent()->GetOwner(), InstigatorActor, ReflectedAmount);
 }
