@@ -24,8 +24,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Tags")
 	FGameplayTagContainer BlockedTags;
 
+	UPROPERTY(ReplicatedUsing="OnRep_IsRunning")
 	bool bIsRunning;
-	
+
+	UFUNCTION()
+	void OnRep_IsRunning();
+
 public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
@@ -49,4 +53,10 @@ public:
 	USActionComponent* GetOwningComponent() const;
 
 	bool IsRunning() const;
+
+	// UObject is not replicated by default. Need to override this function
+	bool IsSupportedForNetworking() const override
+	{
+		return true;
+	}
 };

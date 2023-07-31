@@ -41,10 +41,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Actions")
 	TArray<TSubclassOf<USAction>> DefaultActions;
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Actions")
+	UPROPERTY(Replicated, BlueprintReadOnly, Category = "Actions")
 	TArray<USAction*> Actions;
 	
 	virtual void BeginPlay() override;
+
+	virtual bool ReplicateSubobjects(UActorChannel* Channel, FOutBunch* Bunch, FReplicationFlags* RepFlags) override;
 
 public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,

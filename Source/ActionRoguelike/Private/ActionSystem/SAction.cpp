@@ -2,12 +2,14 @@
 
 
 #include "ActionSystem/SAction.h"
-
+#include "ActionRoguelike/ActionRoguelike.h"
 #include "ActionSystem/SActionComponent.h"
+#include "Net/UnrealNetwork.h"
 
 void USAction::StartAction_Implementation(AActor* Instigator)
 {
-	UE_LOG(LogTemp, Log, TEXT("Running: %s"), * GetNameSafe(this));
+	//UE_LOG(LogTemp, Log, TEXT("Running: %s"), * GetNameSafe(this));
+	LogOnScreen(GetWorld(), FString::Printf(TEXT("Started: %s"), *ActionName.ToString()), FColor::Green);
 	
 	GetOwningComponent()->ActiveGameplayTags.AppendTags(GrantsTags);
 	bIsRunning = true;
@@ -15,12 +17,25 @@ void USAction::StartAction_Implementation(AActor* Instigator)
 
 void USAction::StopAction_Implementation(AActor* Instigator)
 {
-	UE_LOG(LogTemp, Log, TEXT("Stopping: %s"), * GetNameSafe(this));
+	//UE_LOG(LogTemp, Log, TEXT("Stopping: %s"), * GetNameSafe(this));
+	LogOnScreen(GetWorld(), FString::Printf(TEXT("Stopped: %s"), *ActionName.ToString()), FColor::White);
 
-	ensureAlways(bIsRunning);
+	//ensureAlways(bIsRunning);
 	
 	GetOwningComponent()->ActiveGameplayTags.RemoveTags(GrantsTags);
 	bIsRunning = false;
+}
+
+void USAction::OnRep_IsRunning()
+{
+	if (bIsRunning)
+	{
+		StartAction(nullptr);
+	}
+	else
+	{
+		StopAction(nullptr);
+	}
 }
 
 bool USAction::CanStart(AActor* Instigator)
@@ -59,3 +74,11 @@ bool USAction::IsRunning() const
 {
 	return bIsRunning;
 }
+
+void USAction::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(USAction, bIsRunning);
+}
+
