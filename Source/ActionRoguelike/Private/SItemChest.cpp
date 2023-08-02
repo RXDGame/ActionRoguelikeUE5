@@ -33,6 +33,11 @@ bool ASItemChest::CanInteract_Implementation(APawn* InstigatorPawn)
 	return true;
 }
 
+void ASItemChest::OnActorLoaded_Implementation()
+{
+	OnRep_LidOpened();
+}
+
 void ASItemChest::OnRep_LidOpened()
 {
 	const float CurrentPitch = bLidOpened ? TargetPitch : 0;

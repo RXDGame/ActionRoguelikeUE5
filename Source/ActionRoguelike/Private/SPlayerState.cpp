@@ -3,6 +3,8 @@
 
 #include "SPlayerState.h"
 
+#include "SSaveGame.h"
+
 
 ASPlayerState::ASPlayerState()
 {
@@ -32,5 +34,21 @@ bool ASPlayerState::RemoveCredits(int32 Delta)
 int ASPlayerState::GetCredits() const
 {
 	return Credits;
+}
+
+void ASPlayerState::SavePlayerState_Implementation(USSaveGame* SaveObject)
+{
+	if(SaveObject)
+	{
+		SaveObject->Credits = Credits;
+	}
+}
+
+void ASPlayerState::LoadPlayerState_Implementation(USSaveGame* SaveObject)
+{
+	if(SaveObject)
+	{
+		Credits = SaveObject->Credits;
+	}
 }
 

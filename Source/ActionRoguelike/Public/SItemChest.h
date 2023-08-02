@@ -18,12 +18,13 @@ public:
 
 	virtual void Interact_Implementation(APawn* InstigatorPawn) override;
 	virtual bool CanInteract_Implementation(APawn* InstigatorPawn) override;
+	virtual void OnActorLoaded_Implementation() override;
 
 	ASItemChest();
 
 protected:
 
-	UPROPERTY(ReplicatedUsing = "OnRep_LidOpened")
+	UPROPERTY(ReplicatedUsing = "OnRep_LidOpened", SaveGame)
 	bool bLidOpened;
 
 	UFUNCTION()
