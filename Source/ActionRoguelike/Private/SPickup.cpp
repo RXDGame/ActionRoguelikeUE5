@@ -3,6 +3,7 @@
 
 #include "SPickup.h"
 #include "Components/SphereComponent.h"
+#include "Net/UnrealNetwork.h"
 
 
 // Sets default values
@@ -19,6 +20,8 @@ ASPickup::ASPickup()
 	CreditsCost = 0;
 
 	bReplicates = true;
+	MeshComponent->SetIsReplicated(true);
+	SphereComponent->SetIsReplicated(true);
 }
 
 bool ASPickup::CanInteract_Implementation(APawn* InstigatorPawn)
@@ -50,4 +53,11 @@ void ASPickup::DeactivatePickup()
 	{
 		GetWorldTimerManager().SetTimer(ResetActivation_TimerHandle, this, &ASPickup::ActivatePickup, RespawnDelay);
 	}
+}
+
+void ASPickup::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASPickup, bInactive);
 }

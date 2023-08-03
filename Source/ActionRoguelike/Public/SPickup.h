@@ -31,7 +31,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UStaticMeshComponent> MeshComponent;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly, Replicated)
 	bool bInactive;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Respawn")
