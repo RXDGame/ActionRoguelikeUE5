@@ -23,6 +23,8 @@ public:
 protected:
 	
 	USWorldUserWidget* ActiveHealthBar;
+
+	UPROPERTY(Replicated)
 	USWorldUserWidget* ActiveSpotted;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Hit")
@@ -34,6 +36,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	TSubclassOf<USWorldUserWidget> SpottedWidgetClass;
 
+	UPROPERTY(Replicated)
 	AActor* CurrentTarget;
 
 	virtual void PostInitializeComponents() override;
@@ -59,4 +62,7 @@ protected:
 
 	UFUNCTION()
 	void OnPawnSeen(APawn* Pawn);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastPawnSeen(APawn* Pawn);
 };

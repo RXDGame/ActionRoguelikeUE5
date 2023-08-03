@@ -113,11 +113,16 @@ bool USAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 	}
 	
 	const float OldRage = Rage;
-	Rage = FMath::Clamp(Rage + Delta, 0.0f, MaxRage);
-	const float RageDelta = Rage - OldRage;
-	if(RageDelta != 0)
+	const float LocalRage = FMath::Clamp(Rage + Delta, 0.0f, MaxRage);
+	const float RageDelta = LocalRage - OldRage;
+
+	if(GetOwner()->HasAuthority())
 	{
-		MulticastRageChanged(InstigatorActor, Rage, RageDelta);
+		Rage = LocalRage;
+		if(RageDelta != 0)
+		{
+			MulticastRageChanged(InstigatorActor, Rage, RageDelta);
+		}
 	}
 
 	return RageDelta != 0;

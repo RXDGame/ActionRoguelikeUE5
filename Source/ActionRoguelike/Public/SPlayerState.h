@@ -19,7 +19,7 @@ public:
 
 protected:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Credits")
+	UPROPERTY(VisibleAnywhere, Replicated, BlueprintReadOnly, Category = "Credits")
 	int32 Credits;
 
 public:
@@ -29,7 +29,10 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Credits")
 	void AddCredits(int32 Delta);
-	
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastCreditsChange(int32 NewCredits, int32 Delta);
+
 	UFUNCTION(BlueprintCallable, Category = "Credits")
 	bool RemoveCredits(int32 Delta);
 
@@ -41,5 +44,5 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void LoadPlayerState(USSaveGame* SaveObject);
-	
+
 };

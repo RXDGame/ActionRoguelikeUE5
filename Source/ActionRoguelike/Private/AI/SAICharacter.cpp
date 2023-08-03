@@ -12,6 +12,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "Perception/PawnSensingComponent.h"
 
 // Sets default values
@@ -23,6 +24,7 @@ ASAICharacter::ASAICharacter()
 
 	TargetActorKeyName = "TargetActor";
 	TimeToHitParam = "TimeToHit";
+	bReplicates = true;
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Ignore);
 	GetMesh()->SetGenerateOverlapEvents(true);
@@ -72,11 +74,12 @@ void ASAICharacter::SetTargetActor(AActor* NewActor)
 	if(AIControler)
 	{
 		AIControler->GetBlackboardComponent()->SetValueAsObject(TargetActorKeyName, NewActor);
-		if(NewActor != CurrentTarget)
-		{
-			CurrentTarget = NewActor;
-			AddSpottedUI();
-		}
+	}
+
+	if(NewActor != CurrentTarget)
+	{
+		CurrentTarget = NewActor;
+		AddSpottedUI();
 	}
 }
 
@@ -114,6 +117,19 @@ void ASAICharacter::Die()
 
 void ASAICharacter::OnPawnSeen(APawn* Pawn)
 {
-	SetTargetActor(Pawn);
-	DrawDebugString(GetWorld(), GetActorLocation(), "PLAYER SPOTTED", nullptr, FColor::White, 4.0f, true);
+	MulticastPawnSeen(Pawn);
 }
+
+void ASAICharacter::MulticastPawnSeen_Implementation(APawn* Pawn)
+{
+	SetTargetActor(Pawn);
+}
+
+void ASAICharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASAICharacter,CurrentTarget);
+	DOREPLIFETIME(ASAICharacter,ActiveSpotted);	
+}
+

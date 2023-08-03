@@ -4,6 +4,7 @@
 #include "SPlayerState.h"
 
 #include "SSaveGame.h"
+#include "Net/UnrealNetwork.h"
 
 
 ASPlayerState::ASPlayerState()
@@ -13,12 +14,27 @@ ASPlayerState::ASPlayerState()
 
 void ASPlayerState::AddCredits(int32 Delta)
 {
+	if(!HasAuthority())
+	{
+		return;
+	}
+
 	Credits += Delta;
-	OnCreditsChange.Broadcast(Delta, Credits);
+	MulticastCreditsChange(Credits, Delta);
+}
+
+void ASPlayerState::MulticastCreditsChange_Implementation(int32 NewCredits, int32 Delta)
+{
+	OnCreditsChange.Broadcast(Delta, NewCredits);
 }
 
 bool ASPlayerState::RemoveCredits(int32 Delta)
 {
+	if(!HasAuthority())
+	{
+		return false;
+	}
+
 	if(Credits < Delta)
 	{
 		FString FailedMsg = FString::Printf(TEXT("Insufficient credits! Required %i | Current: %i"), Delta, Credits);
@@ -27,7 +43,7 @@ bool ASPlayerState::RemoveCredits(int32 Delta)
 	}
 
 	Credits -= Delta;
-	OnCreditsChange.Broadcast(Delta, Credits);
+	MulticastCreditsChange(Credits, Delta);
 	return true;
 }
 
@@ -51,4 +67,12 @@ void ASPlayerState::LoadPlayerState_Implementation(USSaveGame* SaveObject)
 		Credits = SaveObject->Credits;
 	}
 }
+
+void ASPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(ASPlayerState, Credits);
+}
+
 
