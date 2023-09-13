@@ -43,7 +43,12 @@ protected:
 	UFUNCTION()
 	void OnRep_RepData();
 
+	float TimeStarted;
+
 public:
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	UTexture2D* Icon;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Action")
 	bool bAutoStart;

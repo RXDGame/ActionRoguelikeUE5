@@ -2,7 +2,6 @@
 
 
 #include "ActionSystem/SAction.h"
-#include "ActionRoguelike/ActionRoguelike.h"
 #include "ActionSystem/SActionComponent.h"
 #include "Net/UnrealNetwork.h"
 
@@ -14,6 +13,9 @@ void USAction::StartAction_Implementation(AActor* Instigator)
 	GetOwningComponent()->ActiveGameplayTags.AppendTags(GrantsTags);
 	RepData.bIsRunning = true;
 	RepData.Instigator = Instigator;
+	
+	GetOwningComponent()->OnActionStarted.Broadcast(GetOwningComponent(), this);
+	TimeStarted = GetWorld()->TimeSeconds;
 }
 
 void USAction::StopAction_Implementation(AActor* Instigator)
@@ -26,6 +28,8 @@ void USAction::StopAction_Implementation(AActor* Instigator)
 	GetOwningComponent()->ActiveGameplayTags.RemoveTags(GrantsTags);
 	RepData.bIsRunning = false;
 	RepData.Instigator = Instigator;
+	
+	GetOwningComponent()->OnActionStopped.Broadcast(GetOwningComponent(), this);
 }
 
 void USAction::OnRep_RepData()
