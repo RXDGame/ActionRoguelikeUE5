@@ -52,3 +52,14 @@ bool ASHealthPotion::CanInteract_Implementation(APawn* InstigatorPawn)
 	return true;
 }
 
+FText ASHealthPotion::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	const USAttributeComponent* AttributeComponent = InstigatorPawn->GetComponentByClass<USAttributeComponent>();
+	if(AttributeComponent && AttributeComponent->IsFullHealth())
+	{
+		return NSLOCTEXT("InteractableActors", "HealthPotion_FullHealthWarning", "Already at full health.");
+	}
+
+	return FText::Format(NSLOCTEXT("InteractableActors", "HealthPotion_InteractMessage", "Cost {0} credits. Restores health to maximum."), CreditsCost);
+}
+

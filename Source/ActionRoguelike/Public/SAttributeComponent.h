@@ -76,6 +76,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetMaxHealth() const {return MaxHealth;}
+
+	UFUNCTION(BlueprintCallable)
+	bool IsFullHealth() const;
 	
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE float GetMaxRage() const { return MaxRage; }

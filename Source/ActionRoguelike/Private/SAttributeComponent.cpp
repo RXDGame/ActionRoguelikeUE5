@@ -128,6 +128,11 @@ bool USAttributeComponent::ApplyRageChange(AActor* InstigatorActor, float Delta)
 	return RageDelta != 0;
 }
 
+bool USAttributeComponent::IsFullHealth() const
+{
+	return Health >= MaxHealth;
+}
+
 void USAttributeComponent::MulticastHealthChanged_Implementation(AActor* Instigator, float NewHealth, float Delta)
 {
 	OnHealthChanged.Broadcast(Instigator,this, NewHealth, Delta);

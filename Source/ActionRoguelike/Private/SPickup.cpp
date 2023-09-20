@@ -37,6 +37,11 @@ void ASPickup::Interact_Implementation(APawn* InstigatorPawn)
 	}
 }
 
+FText ASPickup::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	return FText::GetEmpty();
+}
+
 void ASPickup::ActivatePickup()
 {
 	bInactive = false;
