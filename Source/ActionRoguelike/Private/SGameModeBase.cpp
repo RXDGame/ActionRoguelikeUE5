@@ -6,8 +6,10 @@
 #include "SAttributeComponent.h"
 #include "SCharacter.h"
 #include "SGameplayInterface.h"
+#include "SMonsterData.h"
 #include "SPlayerState.h"
 #include "SSaveGame.h"
+#include "ActionSystem/SActionComponent.h"
 #include "AI/SAICharacter.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/GameStateBase.h"
@@ -166,8 +168,27 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
 	if(Locations.Num() > 0)
 	{
-		GetWorld()->SpawnActor<AActor>(MinionClass, Locations[0], FRotator::ZeroRotator);
-		DrawDebugSphere(GetWorld(), Locations[0], 50.0f, 16, FColor::Red, false, 2.0f);
+		if(MonsterData)
+		{
+			TArray<FMonsterInfoRow*> Rows;
+			MonsterData->GetAllRows("", Rows);
+
+			const int32 Index = FMath::RandRange(0, Rows.Num() - 1);
+			const FMonsterInfoRow* SelectedRow = Rows[Index];
+			if(AActor* NewBot = GetWorld()->SpawnActor<AActor>(SelectedRow->MonsterData->MonsterClass, Locations[0], FRotator::ZeroRotator))
+			{
+				USActionComponent* ActionComp = NewBot->GetComponentByClass<USActionComponent>();
+				if(!ActionComp)
+				{
+					return;
+				}
+
+				for (const TSubclassOf<USAction> ActionClass : SelectedRow->MonsterData->Actions)
+				{
+					ActionComp->AddAction(NewBot, ActionClass);
+				}
+			}
+		}
 	}
 }
 
