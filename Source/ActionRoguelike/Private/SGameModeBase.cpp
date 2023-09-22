@@ -9,8 +9,10 @@
 #include "SMonsterData.h"
 #include "SPlayerState.h"
 #include "SSaveGame.h"
+#include "ActionRoguelike/ActionRoguelike.h"
 #include "ActionSystem/SActionComponent.h"
 #include "AI/SAICharacter.h"
+#include "Engine/AssetManager.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/GameStateBase.h"
 #include "Kismet/GameplayStatics.h"
@@ -168,25 +170,51 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 	TArray<FVector> Locations = QueryInstance->GetResultsAsLocations();
 	if(Locations.Num() > 0)
 	{
-		if(MonsterData)
+		if(MonsterTable)
 		{
 			TArray<FMonsterInfoRow*> Rows;
-			MonsterData->GetAllRows("", Rows);
+			MonsterTable->GetAllRows("", Rows);
 
 			const int32 Index = FMath::RandRange(0, Rows.Num() - 1);
 			const FMonsterInfoRow* SelectedRow = Rows[Index];
-			if(AActor* NewBot = GetWorld()->SpawnActor<AActor>(SelectedRow->MonsterData->MonsterClass, Locations[0], FRotator::ZeroRotator))
-			{
-				USActionComponent* ActionComp = NewBot->GetComponentByClass<USActionComponent>();
-				if(!ActionComp)
-				{
-					return;
-				}
 
-				for (const TSubclassOf<USAction> ActionClass : SelectedRow->MonsterData->Actions)
-				{
-					ActionComp->AddAction(NewBot, ActionClass);
-				}
+			UAssetManager* AssetManager = UAssetManager::GetIfValid();
+			if(AssetManager)
+			{
+				TArray<FName> Bundle;
+				FStreamableDelegate Delegate = FStreamableDelegate::CreateUObject(this,
+					&ASGameModeBase::OnMonsterLoaded, SelectedRow->MonsterId, Locations[0]);
+
+				LogOnScreen(this, "Loading asset...", FColor::Green);
+				AssetManager->LoadPrimaryAsset(SelectedRow->MonsterId, Bundle, Delegate);
+			}
+		}
+	}
+}
+
+void ASGameModeBase::OnMonsterLoaded(FPrimaryAssetId LoadedAssetId, FVector SpawnLocation)
+{
+	LogOnScreen(this, "Asset loaded!", FColor::Green);
+	const UAssetManager* AssetManager = UAssetManager::GetIfValid();
+	if(AssetManager)
+	{
+		USMonsterData* MonsterData =  Cast<USMonsterData>(AssetManager->GetPrimaryAssetObject(LoadedAssetId));
+		if(!MonsterData)
+		{
+			return;
+		}
+	
+		if(AActor* NewBot = GetWorld()->SpawnActor<AActor>(MonsterData->MonsterClass, SpawnLocation, FRotator::ZeroRotator))
+		{
+			USActionComponent* ActionComp = NewBot->GetComponentByClass<USActionComponent>();
+			if(!ActionComp)
+			{
+				return;
+			}
+
+			for (const TSubclassOf<USAction> ActionClass : MonsterData->Actions)
+			{
+				ActionComp->AddAction(NewBot, ActionClass);
 			}
 		}
 	}

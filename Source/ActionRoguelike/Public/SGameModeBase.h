@@ -24,7 +24,7 @@ struct FMonsterInfoRow : public FTableRowBase
 	}
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	USMonsterData* MonsterData {};
+	FPrimaryAssetId MonsterId;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float Weight;
@@ -55,7 +55,7 @@ protected:
 	float SpawnInterval;
 	
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	UDataTable* MonsterData;
+	UDataTable* MonsterTable;
 
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	UCurveFloat* DifficultyCurve;
@@ -80,8 +80,11 @@ public:
 	void KillAll();
 
 protected:
+	
 	UFUNCTION()
 	void OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryInstance, EEnvQueryStatus::Type QueryStatus);
+
+	void OnMonsterLoaded(FPrimaryAssetId LoadedAssetId, FVector SpawnLocation);
 
 	UFUNCTION()
 	void RespawnPlayerElapsed(AController* Controller);
