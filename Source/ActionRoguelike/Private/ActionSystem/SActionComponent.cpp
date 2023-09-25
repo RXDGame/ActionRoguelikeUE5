@@ -7,6 +7,8 @@
 #include "Engine/ActorChannel.h"
 #include "Net/UnrealNetwork.h"
 
+DECLARE_CYCLE_STAT(TEXT("StartActionByName"), STAT_StartActionByName, STATGROUP_MEASURES);
+
 USActionComponent::USActionComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
@@ -81,6 +83,8 @@ void USActionComponent::RemoveAction(USAction* Action)
 
 bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 {
+	SCOPE_CYCLE_COUNTER(STAT_StartActionByName);
+	
 	for (USAction* Action : Actions)
 	{
 		if(Action && Action->ActionName == ActionName)
@@ -96,6 +100,9 @@ bool USActionComponent::StartActionByName(AActor* Instigator, FName ActionName)
 			{
 				ServerStartAction(Instigator, ActionName);
 			}
+
+			// Bookmark for Unreal Insights
+			TRACE_BOOKMARK(TEXT("StartAction::%s"), *GetNameSafe(Action));
 			
 			Action->StartAction(Instigator);
 			return true;
@@ -110,7 +117,7 @@ bool USActionComponent::StopActionByName(AActor* Instigator, FName ActionName)
 	for (USAction* Action : Actions)
 	{
 		if(Action && Action->ActionName == ActionName)
-		{			
+		{
 			if(Action->IsRunning())
 			{
 				if(!GetOwner()->HasAuthority())
