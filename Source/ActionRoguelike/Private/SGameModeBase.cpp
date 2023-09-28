@@ -29,6 +29,13 @@ ASGameModeBase::ASGameModeBase()
 void ASGameModeBase::InitGame(const FString& MapName, const FString& Options, FString& ErrorMessage)
 {
 	Super::InitGame(MapName, Options, ErrorMessage);
+
+	FString SelectedSaveGame = UGameplayStatics::ParseOption(Options, "SaveGame");
+	if(SelectedSaveGame.Len() > 0)
+	{
+		SlotName = SelectedSaveGame;
+	}
+	
 	LoadSaveGame();
 }
 
