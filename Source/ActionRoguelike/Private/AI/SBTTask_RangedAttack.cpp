@@ -4,6 +4,7 @@
 #include "AI/SBTTask_RangedAttack.h"
 #include "AIController.h"
 #include "SAttributeComponent.h"
+#include "AI/SAICharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Character.h"
 
@@ -21,7 +22,7 @@ EBTNodeResult::Type USBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& O
 		return EBTNodeResult::Failed;
 	}
 
-	ACharacter* MyCharacter = Cast<ACharacter>(MyController->GetPawn());
+	ASAICharacter* MyCharacter = Cast<ASAICharacter>(MyController->GetPawn());
 	if(!ensure(MyCharacter))
 	{
 		return EBTNodeResult::Failed;
@@ -49,6 +50,6 @@ EBTNodeResult::Type USBTTask_RangedAttack::ExecuteTask(UBehaviorTreeComponent& O
 	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 	SpawnParameters.Instigator = MyCharacter;
 
-	const AActor* NewProj = GetWorld()->SpawnActor<AActor>(ProjectileClass, MuzzleLocation, MuzzleRotation, SpawnParameters);
+	const AActor* NewProj = GetWorld()->SpawnActor<AActor>(MyCharacter->GetProjectileClass(), MuzzleLocation, MuzzleRotation, SpawnParameters);
 	return NewProj ? EBTNodeResult::Succeeded : EBTNodeResult::Failed;
 }

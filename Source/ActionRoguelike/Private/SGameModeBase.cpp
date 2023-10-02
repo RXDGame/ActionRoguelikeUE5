@@ -192,7 +192,7 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 				FStreamableDelegate Delegate = FStreamableDelegate::CreateUObject(this,
 					&ASGameModeBase::OnMonsterLoaded, SelectedRow->MonsterId, Locations[0]);
 
-				LogOnScreen(this, "Loading asset...", FColor::Green);
+				//LogOnScreen(this, "Loading asset...", FColor::Green);
 				AssetManager->LoadPrimaryAsset(SelectedRow->MonsterId, Bundle, Delegate);
 			}
 		}
@@ -201,7 +201,7 @@ void ASGameModeBase::OnQueryCompleted(UEnvQueryInstanceBlueprintWrapper* QueryIn
 
 void ASGameModeBase::OnMonsterLoaded(FPrimaryAssetId LoadedAssetId, FVector SpawnLocation)
 {
-	LogOnScreen(this, "Asset loaded!", FColor::Green);
+	//LogOnScreen(this, "Asset loaded!", FColor::Green);
 	const UAssetManager* AssetManager = UAssetManager::GetIfValid();
 	if(AssetManager)
 	{
@@ -213,6 +213,11 @@ void ASGameModeBase::OnMonsterLoaded(FPrimaryAssetId LoadedAssetId, FVector Spaw
 	
 		if(AActor* NewBot = GetWorld()->SpawnActor<AActor>(MonsterData->MonsterClass, SpawnLocation, FRotator::ZeroRotator))
 		{
+			if(ASAICharacter* BotChar = Cast<ASAICharacter>(NewBot))
+			{
+				BotChar->SetProjectileClass(MonsterData->ProjectileClass);
+			}
+			
 			USActionComponent* ActionComp = NewBot->GetComponentByClass<USActionComponent>();
 			if(!ActionComp)
 			{

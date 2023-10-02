@@ -39,6 +39,8 @@ protected:
 	UPROPERTY(Replicated)
 	AActor* CurrentTarget;
 
+	TSubclassOf<AActor> ProjectileClass;
+
 	virtual void PostInitializeComponents() override;
 
 	UFUNCTION()
@@ -65,4 +67,16 @@ protected:
 
 	UFUNCTION(NetMulticast, Unreliable)
 	void MulticastPawnSeen(APawn* Pawn);
+
+public:
+	
+	TSubclassOf<AActor> GetProjectileClass() const
+	{
+		return ProjectileClass;
+	}
+
+	FORCEINLINE void SetProjectileClass(TSubclassOf<AActor> TargetClass)
+	{
+		ProjectileClass = TargetClass;
+	}
 };

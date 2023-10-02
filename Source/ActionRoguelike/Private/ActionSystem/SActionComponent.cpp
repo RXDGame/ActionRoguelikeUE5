@@ -49,7 +49,7 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	/*const FString DebugMsg = GetNameSafe(GetOwner()) + ": " + ActiveGameplayTags.ToStringSimple();
-	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, DebugMsg);*/
+	GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::White, DebugMsg);
 
 	for (USAction* Action : Actions)
 	{
@@ -57,7 +57,7 @@ void USActionComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 		FString ActionMsg = FString::Printf(TEXT("[%s] Action: %s "), *GetNameSafe(GetOwner()),*GetNameSafe(Action));
 
 		LogOnScreen(GetWorld(), ActionMsg, TextColor,0.0f);
-	}
+	}*/
 }
 
 void USActionComponent::AddAction(AActor* Instigator, TSubclassOf<USAction> ActionClass)

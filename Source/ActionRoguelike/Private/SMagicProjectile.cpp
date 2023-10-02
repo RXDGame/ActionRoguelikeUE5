@@ -49,7 +49,7 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 		{
 			Explode();
 
-			if(ActionComp && HasAuthority())
+			if(ActionComp && HasAuthority() && BurningEffectClass != nullptr)
 			{
 				ActionComp->AddAction(GetInstigator(), BurningEffectClass);
 			}
@@ -60,7 +60,7 @@ void ASMagicProjectile::OnActorOverlap(UPrimitiveComponent* OverlappedComponent,
 void ASMagicProjectile::Explode_Implementation()
 {
 	Super::Explode_Implementation();
-	
+
 	UGameplayStatics::SpawnSoundAtLocation(GetWorld(), ImpactSound, GetActorLocation(), FRotator::ZeroRotator,
 		1,1, 0, AttenuationSettings);
 }

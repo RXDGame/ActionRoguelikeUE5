@@ -25,7 +25,4 @@ protected:
 	
 	UPROPERTY(EditAnywhere, Category = "AI")
 	FBlackboardKeySelector TargetActorKey;
-
-	UPROPERTY(EditAnywhere, Category = "AI")
-	TSubclassOf<AActor> ProjectileClass;
 };
