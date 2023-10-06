@@ -33,6 +33,16 @@ bool ASItemChest::CanInteract_Implementation(APawn* InstigatorPawn)
 	return true;
 }
 
+FText ASItemChest::GetInteractText_Implementation(APawn* InstigatorPawn)
+{
+	if(bLidOpened)
+	{
+		return NSLOCTEXT("InteractableActors", "Chest_Close", "Close chest");
+	}
+
+	return NSLOCTEXT("InteractableActors", "Chest_Open", "Open chest");
+}
+
 void ASItemChest::OnActorLoaded_Implementation()
 {
 	OnRep_LidOpened();
